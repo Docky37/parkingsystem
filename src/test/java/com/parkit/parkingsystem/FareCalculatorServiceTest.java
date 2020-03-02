@@ -137,7 +137,7 @@ public class FareCalculatorServiceTest {
         ticket.setInTime(inTime);
         ticket.setOutTime(outTime);
         ticket.setParkingSpot(parkingSpot);
-        ticket.setRegularCustomer(true);
+        ticket.setRecurrentUser(true);
         fareCalculatorService.calculateFare(ticket);
         
         double discountedFare = Math.round((1-Fare.REGULAR_CUSTOMER_DISCOUNT)*Fare.CAR_RATE_PER_HOUR*100);

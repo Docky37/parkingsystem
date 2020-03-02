@@ -18,7 +18,7 @@ public class FareCalculatorService {
 			duration = duration / 60;
 		}
 		double discount = 0;
-		if (ticket.isRegularCustomer()) {
+		if (ticket.isRecurrentUser()) {
 			discount = Fare.REGULAR_CUSTOMER_DISCOUNT;
 		}
 		

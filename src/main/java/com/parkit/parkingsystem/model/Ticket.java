@@ -9,7 +9,7 @@ public class Ticket {
 	private double price;
 	private LocalDateTime inTime;
 	private LocalDateTime outTime;
-	private boolean isRegularCustomer = false;
+	private boolean isRecurrentUser = false;
 
 	public int getId() {
 		return id;
@@ -59,12 +59,12 @@ public class Ticket {
 		this.outTime = outTime;
 	}
 
-	public boolean isRegularCustomer() {
-		return isRegularCustomer;
+	public boolean isRecurrentUser() {
+		return isRecurrentUser;
 	}
 
-	public void setRegularCustomer(boolean isRegularCustomer) {
-		this.isRegularCustomer = isRegularCustomer;
+	public void setRecurrentUser(boolean isRegularCustomer) {
+		this.isRecurrentUser = isRegularCustomer;
 	}
 	
 	

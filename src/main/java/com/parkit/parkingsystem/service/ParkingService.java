@@ -31,7 +31,7 @@ public class ParkingService {
 		try {
 			ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
 			if (parkingSpot != null && parkingSpot.getId() > 0) {
-				String vehicleRegNumber = getVehichleRegNumber();
+				String vehicleRegNumber = getVehicleRegNumber();
 				boolean test = ticketDAO.checkExistingTicket(vehicleRegNumber);
 				parkingSpot.setAvailable(false);
 				parkingSpotDAO.updateParking(parkingSpot);// allot this parking space and mark it's availability as
@@ -48,7 +48,7 @@ public class ParkingService {
 //System.out.println(test);
 					System.out.println(
 							"Welcome back! As a recurring user of our parking, you'll benefit from a 5% discount.");
-					ticket.setRegularCustomer(true);
+					ticket.setRecurrentUser(true);
 				}
 				ticket.setInTime(inTime);
 				ticket.setOutTime(null);
@@ -62,7 +62,7 @@ public class ParkingService {
 		}
 	}
 
-	private String getVehichleRegNumber() throws Exception {
+	private String getVehicleRegNumber() throws Exception {
 		System.out.println("Please type the vehicle registration number and press enter key");
 		return inputReaderUtil.readVehicleRegistrationNumber();
 	}
@@ -107,7 +107,7 @@ public class ParkingService {
 
 	public void processExitingVehicle() {
 		try {
-			String vehicleRegNumber = getVehichleRegNumber();
+			String vehicleRegNumber = getVehicleRegNumber();
 			Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
 			LocalDateTime outTime = LocalDateTime.now();
 			ticket.setOutTime(outTime);
