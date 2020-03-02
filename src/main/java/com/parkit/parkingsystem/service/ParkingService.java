@@ -44,6 +44,12 @@ public class ParkingService {
 				ticket.setParkingSpot(parkingSpot);
 				ticket.setVehicleRegNumber(vehicleRegNumber);
 				ticket.setPrice(0);
+				if (test == true) {
+//System.out.println(test);
+					System.out.println(
+							"Welcome back! As a recurring user of our parking, you'll benefit from a 5% discount.");
+					ticket.setRegularCustomer(true);
+				}
 				ticket.setInTime(inTime);
 				ticket.setOutTime(null);
 				ticketDAO.saveTicket(ticket);
