@@ -145,4 +145,19 @@ public class FareCalculatorServiceTest {
         assertEquals(discountedFare, ticket.getPrice());
     }
 
+    @Test
+    public void calculateFareCarForLessThanThirtyMinutes(){
+        LocalDateTime inTime = LocalDateTime.now();
+        inTime=inTime.minusMinutes(20);
+        LocalDateTime outTime = LocalDateTime.now();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        ticket.setRecurrentUser(true);
+        fareCalculatorService.calculateFare(ticket);
+        
+        assertEquals(ticket.getPrice(),0);
+    }
+
 }
