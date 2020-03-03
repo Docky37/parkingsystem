@@ -85,7 +85,7 @@ public class FareCalculatorServiceTest {
     @Test
     public void calculateFareBikeWithLessThanOneHourParkingTime(){
         LocalDateTime inTime = LocalDateTime.now();
-        inTime=inTime.minusMinutes(45);//45 minutes parking time should give 3/4th parking fare
+        inTime=inTime.minusMinutes(Fare.FREE_PARKING_DURATION+1);//45 minutes parking time should give 3/4th parking fare
         LocalDateTime outTime = LocalDateTime.now();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
 
@@ -93,7 +93,7 @@ public class FareCalculatorServiceTest {
         ticket.setOutTime(outTime);
         ticket.setParkingSpot(parkingSpot);
         fareCalculatorService.calculateFare(ticket);
-        double fare = Math.round(0.75F*Fare.BIKE_RATE_PER_HOUR*100);
+        double fare = Math.round((Fare.FREE_PARKING_DURATION+1)/60F*Fare.BIKE_RATE_PER_HOUR*100);
         fare /=100; 
         assertEquals( fare , ticket.getPrice());
     }
@@ -157,7 +157,7 @@ public class FareCalculatorServiceTest {
         ticket.setRecurrentUser(true);
         fareCalculatorService.calculateFare(ticket);
         
-        assertEquals(ticket.getPrice(),0);
+        assertEquals(0,ticket.getPrice());
     }
 
 }
