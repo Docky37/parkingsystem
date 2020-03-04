@@ -41,7 +41,7 @@ public class FareCalculatorServiceTest {
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(parkingSpot);
 		fareCalculatorService.calculateFare(ticket);
-		assertEquals(ticket.getPrice(), Fare.CAR_RATE_PER_HOUR);
+		assertEquals(Fare.CAR_RATE_PER_HOUR, ticket.getPrice());
 	}
 
 	@Test
@@ -55,7 +55,7 @@ public class FareCalculatorServiceTest {
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(parkingSpot);
 		fareCalculatorService.calculateFare(ticket);
-		assertEquals(ticket.getPrice(), Fare.BIKE_RATE_PER_HOUR);
+		assertEquals(Fare.BIKE_RATE_PER_HOUR, ticket.getPrice());
 	}
 
 	@Test
@@ -102,7 +102,7 @@ public class FareCalculatorServiceTest {
 		price = price.multiply(BigDecimal.valueOf(Fare.BIKE_RATE_PER_HOUR));
 		BigDecimal roundedPrice = new BigDecimal(0);
 		roundedPrice = price.setScale(2, RoundingMode.HALF_UP);
-		assertEquals(roundedPrice.doubleValue(), ticket.getPrice());
+		assertEquals(ticket.getPrice(), roundedPrice.doubleValue());
 	}
 
 	@Test
@@ -123,7 +123,7 @@ public class FareCalculatorServiceTest {
 		price = price.multiply(BigDecimal.valueOf(Fare.CAR_RATE_PER_HOUR));
 		BigDecimal roundedPrice = new BigDecimal(0);
 		roundedPrice = price.setScale(2, RoundingMode.HALF_UP);
-		assertEquals(roundedPrice.doubleValue(), ticket.getPrice());
+		assertEquals(ticket.getPrice(), roundedPrice.doubleValue());
 	}
 
 	@Test
@@ -153,9 +153,12 @@ public class FareCalculatorServiceTest {
 		ticket.setRecurrentUser(true);
 		fareCalculatorService.calculateFare(ticket);
 
-		double discountedFare = Math.round((1 - Fare.REGULAR_CUSTOMER_DISCOUNT) * Fare.CAR_RATE_PER_HOUR * 100);
-		discountedFare /= 100;
-		assertEquals(discountedFare, ticket.getPrice());
+		BigDecimal price = new BigDecimal(0);
+		price = BigDecimal.ONE.subtract(BigDecimal.valueOf(Fare.REGULAR_CUSTOMER_DISCOUNT))
+				.multiply(BigDecimal.valueOf(Fare.CAR_RATE_PER_HOUR));
+		BigDecimal roundedPrice = new BigDecimal(0);
+		roundedPrice = price.setScale(2, RoundingMode.HALF_UP);
+		assertEquals(ticket.getPrice(), roundedPrice.doubleValue());
 	}
 
 	@Test

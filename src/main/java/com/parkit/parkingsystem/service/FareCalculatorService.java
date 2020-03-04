@@ -19,41 +19,39 @@ public class FareCalculatorService {
 			throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
 		}
 
-		duration = new BigDecimal(ticket.getInTime().until(ticket.getOutTime(), ChronoUnit.HOURS));// outHour - inHour;
+		duration = new BigDecimal(ticket.getInTime().until(ticket.getOutTime(), ChronoUnit.HOURS));
 
 		if (duration.equals(BigDecimal.ZERO)) {
 			duration = new BigDecimal((ticket.getInTime().until(ticket.getOutTime(), ChronoUnit.MINUTES)));
 			duration = duration.divide(BigDecimal.valueOf(60L), mathContext);
 		}
 		if (ticket.isRecurrentUser()) {
-			discount = new BigDecimal(Fare.REGULAR_CUSTOMER_DISCOUNT);
+			discount = BigDecimal.valueOf(Fare.REGULAR_CUSTOMER_DISCOUNT);
 		} else {
 			discount = new BigDecimal(0);
 		}
 
 		switch (ticket.getParkingSpot().getParkingType()) {
-		case CAR: {
-			price = calculate(Fare.CAR_RATE_PER_HOUR);
-			ticket.setPrice(price.doubleValue());
+		case CAR:
+			calculateAndSetPrice(Fare.CAR_RATE_PER_HOUR, ticket);
 			break;
-		}
-		case BIKE: {
-			price = calculate(Fare.BIKE_RATE_PER_HOUR);
-			ticket.setPrice(price.doubleValue());
+		case BIKE:
+			calculateAndSetPrice(Fare.BIKE_RATE_PER_HOUR, ticket);
 			break;
-		}
 		default:
 			throw new IllegalArgumentException("Unkown Parking Type");
 		}
 	}
 
-	private BigDecimal calculate(Double fare) {
-		BigDecimal price = new BigDecimal(0);
-		BigDecimal roundedPrice = new BigDecimal(0);
-		if (duration.multiply(BigDecimal.valueOf(60L)).compareTo(BigDecimal.valueOf(Fare.FREE_PARKING_DURATION)) == 1) {
-			price = BigDecimal.ONE.subtract(discount).multiply(duration).multiply(BigDecimal.valueOf(fare));
-			roundedPrice = price.setScale(2, RoundingMode.HALF_UP);
+	public void calculateAndSetPrice(Double fare, Ticket ticket) {
+		BigDecimal calculedPrice = BigDecimal.ZERO;
+		BigDecimal roundedPrice;
+		if (duration.multiply(BigDecimal.valueOf(60L)).compareTo(BigDecimal.valueOf(Fare.FREE_PARKING_DURATION)) > 0) {
+			calculedPrice = BigDecimal.ONE.subtract(discount).multiply(duration).multiply(BigDecimal.valueOf(fare));
+			roundedPrice = calculedPrice.setScale(2, RoundingMode.HALF_UP);
+		} else {
+			roundedPrice = calculedPrice;
 		}
-		return roundedPrice;
+		ticket.setPrice(roundedPrice.doubleValue());
 	}
 }
