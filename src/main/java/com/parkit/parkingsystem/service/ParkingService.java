@@ -70,7 +70,7 @@ public class ParkingService {
 		int parkingNumber = 0;
 		ParkingSpot parkingSpot = null;
 		try {
-			ParkingType parkingType = getVehichleType();
+			ParkingType parkingType = getVehicleType();
 			parkingNumber = parkingSpotDAO.getNextAvailableSlot(parkingType);
 			if (parkingNumber > 0) {
 				parkingSpot = new ParkingSpot(parkingNumber, parkingType, true);
@@ -85,7 +85,7 @@ public class ParkingService {
 		return parkingSpot;
 	}
 
-	private ParkingType getVehichleType() {
+	private ParkingType getVehicleType() {
 		logger.info("Please select vehicle type from menu");
 		logger.info("1 CAR");
 		logger.info("2 BIKE");
@@ -108,14 +108,16 @@ public class ParkingService {
 			String vehicleRegNumber = getVehicleRegNumber();
 			Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
 			LocalDateTime outTime = LocalDateTime.now();
+			LocalDateTime inTime = ticket.getInTime();
 			ticket.setOutTime(outTime);
 			fareCalculatorService.calculateFare(ticket);
 			if (ticketDAO.updateTicket(ticket)) {
 				ParkingSpot parkingSpot = ticket.getParkingSpot();
 				parkingSpot.setAvailable(true);
 				parkingSpotDAO.updateParking(parkingSpot);
-				logger.info("Please pay the parking fare: {}", ticket.getPrice());
+				logger.info("Recorded in-time for vehicle number: {} is: {}" , vehicleRegNumber, inTime);
 				logger.info("Recorded out-time for vehicle number: {} is: {}", ticket.getVehicleRegNumber(), outTime);
+				logger.info("Please pay the parking fare: {}", ticket.getPrice());
 			} else {
 				logger.error("Unable to update ticket information. Error occurred");
 			}

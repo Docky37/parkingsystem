@@ -1,5 +1,6 @@
 package com.parkit.parkingsystem.integration;
 
+import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
@@ -18,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -67,17 +67,17 @@ public class ParkingDataBaseIT {
 	}
 
 	@Test
-	public void testParkingLotExit() {
+	public void testParkingSpotExit() {
 		// GIVEN
-		testParkingACar();
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+		parkingService.processIncomingVehicle();
 		dataBasePrepareService.updateInTime();
 		// WHEN
 		parkingService.processExitingVehicle();
 		Ticket ticket = ticketDAO.getTicket("ABCDEF");
 		// THEN
 		assertNotNull(ticket.getOutTime()); // Check that OUT_TIME field of Ticket table contains a value
-		assertNotEquals(0, ticket.getPrice()); // Check that PRICE field contains an updated value
+		assertEquals(Fare.CAR_RATE_PER_HOUR, ticket.getPrice()); // Check that PRICE field contains one hour parking fare
 	}
 
 }
