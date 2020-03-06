@@ -33,7 +33,7 @@ public class ParkingService {
 			ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
 			if (parkingSpot != null && parkingSpot.getId() > 0) {
 				String vehicleRegNumber = getVehicleRegNumber();
-				boolean test = ticketDAO.checkExistingTicket(vehicleRegNumber);
+				boolean ticketExist = ticketDAO.checkExistingTicket(vehicleRegNumber);
 				parkingSpot.setAvailable(false);
 				parkingSpotDAO.updateParking(parkingSpot);// allot this parking space and mark it's availability as
 															// false
@@ -44,8 +44,8 @@ public class ParkingService {
 				ticket.setParkingSpot(parkingSpot);
 				ticket.setVehicleRegNumber(vehicleRegNumber);
 				ticket.setPrice(0);
-				if (test) {
-					logger.info("Welcome back! As a recurring user of our parking, you'll benefit from a % discount.",
+				if (ticketExist) {
+					logger.info("Welcome back! As a recurring user of our parking, you'll benefit from a {} discount.",
 							"5%");
 					ticket.setRecurrentUser(true);
 				}
@@ -53,15 +53,15 @@ public class ParkingService {
 				ticket.setOutTime(null);
 				ticketDAO.saveTicket(ticket);
 				logger.info("Generated Ticket and saved in DB");
-				logger.info("Please park your vehicle in spot number: %s", parkingSpot.getId());
-				logger.info("Recorded in-time for vehicle number: %s is: %s", vehicleRegNumber, inTime);
+				logger.info("Please park your vehicle in spot number: {}", parkingSpot.getId());
+				logger.info("Recorded in-time for vehicle number: {} is: {}" , vehicleRegNumber, inTime);
 			}
 		} catch (Exception e) {
 			logger.error("Unable to process incoming vehicle", e);
 		}
 	}
 
-	private String getVehicleRegNumber()  {
+	private String getVehicleRegNumber() {
 		logger.info("Please type the vehicle registration number and press enter key");
 		return inputReaderUtil.readVehicleRegistrationNumber();
 	}
@@ -114,9 +114,8 @@ public class ParkingService {
 				ParkingSpot parkingSpot = ticket.getParkingSpot();
 				parkingSpot.setAvailable(true);
 				parkingSpotDAO.updateParking(parkingSpot);
-				logger.info("Please pay the parking fare: %d", ticket.getPrice());
-				logger.info(
-						"Recorded out-time for vehicle number: %s  is: %s", ticket.getVehicleRegNumber(), outTime);
+				logger.info("Please pay the parking fare: {}", ticket.getPrice());
+				logger.info("Recorded out-time for vehicle number: {} is: {}", ticket.getVehicleRegNumber(), outTime);
 			} else {
 				logger.error("Unable to update ticket information. Error occurred");
 			}

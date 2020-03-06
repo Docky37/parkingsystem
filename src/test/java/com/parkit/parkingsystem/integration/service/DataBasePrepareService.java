@@ -6,25 +6,40 @@ import java.sql.Connection;
 
 public class DataBasePrepareService {
 
-    DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
+	DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
 
-    public void clearDataBaseEntries(){
-        Connection connection = null;
-        try{
-            connection = dataBaseTestConfig.getConnection();
+	public void clearDataBaseEntries() {
+		Connection connection = null;
+		try {
+			connection = dataBaseTestConfig.getConnection();
 
-            //set parking entries to available
-            connection.prepareStatement("update parking set available = true").execute();
+			// set parking entries to available
+			connection.prepareStatement("update parking set available = true").execute();
 
-            //clear ticket entries;
-            connection.prepareStatement("truncate table ticket").execute();
+			// clear ticket entries;
+			connection.prepareStatement("truncate table ticket").execute();
 
-        }catch(Exception e){
-            e.printStackTrace();
-        }finally {
-            dataBaseTestConfig.closeConnection(connection);
-        }
-    }
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			dataBaseTestConfig.closeConnection(connection);
+		}
+	}
 
+	public void updateInTime() {
+		Connection connection = null;
+		try {
+			connection = dataBaseTestConfig.getConnection();
+
+			// set ticket InTime
+			connection.prepareStatement("update test.ticket set IN_TIME = date_sub(IN_TIME, interval 1 HOUR) where ID=1;")
+					.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			dataBaseTestConfig.closeConnection(connection);
+		}
+	}
 
 }

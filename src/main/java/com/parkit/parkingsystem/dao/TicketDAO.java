@@ -32,8 +32,6 @@ public class TicketDAO {
 			if (rs.next()) {
 				existTicket=true;
 			}
-			getDataBaseConfig().closeResultSet(rs);
-			getDataBaseConfig().closePreparedStatement(ps);
 		} catch (Exception ex) {
 			logger.error("Error checkExistingTicket(vehicleRegNumber)", ex);
 		} finally {
