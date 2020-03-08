@@ -17,7 +17,7 @@ public class DataBaseConfig {
 
 	public Connection getConnection() throws ClassNotFoundException, SQLException {
 		logger.info("Create DB connection");
-		try(FileInputStream f = new FileInputStream("db.properties")) {
+		try(FileInputStream f = new FileInputStream("src/main/resources/db.properties")) {
 		    // load the properties file
 		    Properties pros = new Properties();
 		    pros.load(f);
@@ -29,7 +29,6 @@ public class DataBaseConfig {
 		    
 		    // create a connection to the database
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			return DriverManager.getConnection(url, user, password);
 		}catch (IOException e){
 			logger.error("Unable to read database properties file!",e);
 		}

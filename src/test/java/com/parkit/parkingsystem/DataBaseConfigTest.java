@@ -21,7 +21,7 @@ public class DataBaseConfigTest {
 	}
 
 	@Test
-	@DisplayName("When DataBaseConfig.GetConnection is called then a Connexion should be created.")
+	@DisplayName("Given a connection was declared, when DataBaseConfig.GetConnection is called, then a Connexion should be created.")
 	public void givenDeclaredConnectionVariable_whenCallGetConnection_thenAConnexionExists() throws ClassNotFoundException, SQLException {
 		// GIVEN
 		Connection connection;
