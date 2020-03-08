@@ -12,13 +12,14 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,7 +55,9 @@ public class ParkingDataBaseIT {
 	}
 
 	@Test
-	public void testParkingACar() {
+	@Tag("ParkingACar")
+	@DisplayName("At vehicle entry, after incoming process, DB tables should be updated (parking.AVAILABLE, new record in ticket).")
+	public void givenVehicleEntry_whenIncomingProcessIsCompleted_thenDBShouldBeUpdated() {
 		// GIVEN
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processIncomingVehicle();
@@ -62,22 +65,24 @@ public class ParkingDataBaseIT {
 		ParkingSpot parkingSpot = parkingService.getNextParkingNumberIfAvailable();
 		boolean ticketExist = ticketDAO.checkExistingTicket("ABCDEF");
 		// THEN
-		assertEquals(2, parkingSpot.getId()); // Check the ParkingSlot Availability update in test DB
-		assertEquals(true, ticketExist); // Check the creation of a ticket in test DB
+		assertThat(parkingSpot.getId()).isEqualTo(2); //Check the ParkingSpot Availability update in test DB
+		assertThat(ticketExist).isEqualTo(true); //Check the creation of a ticket in test DB
 	}
 
 	@Test
-	public void testParkingSpotExit() {
+	@Tag("ParkingExit")
+	@DisplayName("At vehicle exit, after exit process, DB tables should be updated (OUT_TIME & PRICE).")
+	public void givenVehicleExit_whenExitProcessIsCompleted_thenDBShouldBeUpdated() {
 		// GIVEN
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processIncomingVehicle();
-		dataBasePrepareService.updateInTime();
+		dataBasePrepareService.updateInTime(); // Data update used to generate one hour parking duration
 		// WHEN
 		parkingService.processExitingVehicle();
 		Ticket ticket = ticketDAO.getTicket("ABCDEF");
 		// THEN
-		assertNotNull(ticket.getOutTime()); // Check that OUT_TIME field of Ticket table contains a value
-		assertEquals(Fare.CAR_RATE_PER_HOUR, ticket.getPrice()); // Check that PRICE field contains one hour parking fare
+		assertThat(ticket.getOutTime()).isNotNull();// Check that OUT_TIME field of Ticket table contains a value
+		assertThat(ticket.getPrice()).isEqualTo(Fare.CAR_RATE_PER_HOUR); // Check that PRICE field contains one hour parking fare	
 	}
 
 }
