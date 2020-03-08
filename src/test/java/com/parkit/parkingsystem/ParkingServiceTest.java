@@ -8,6 +8,8 @@ import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -51,23 +53,32 @@ public class ParkingServiceTest {
 			throw new RuntimeException("Failed to set up test mock objects");
 		}
 	}
-
+	
 	@Test
-	public void processExitingVehicleTest() {
-		when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-		when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
-		parkingService.processExitingVehicle();
-		verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
-	}
-
-	@Test
-	public void processIncomingVehicleOfRecurringUser() {
+	@Tag("RecurringUser")
+	@DisplayName("At vehicle entry, after reading registration number, system should check if previous ticket exists.")
+	public void givenCarEntry_whenProcessIncomingVehicle_thenCheckExistingTicket() {
+		// GIVEN
 		when(ticketDAO.checkExistingTicket(anyString())).thenReturn(true);
 		when(inputReaderUtil.readSelection()).thenReturn(1);
 		when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
+		// WHEN
 		parkingService.processIncomingVehicle();
+		// THEN
+		verify(ticketDAO, Mockito.times(1)).checkExistingTicket(anyString());
+	}
 
-		verify(ticketDAO).checkExistingTicket(anyString());
+	@Test
+	@Tag("ParkingSpotUpdate")
+	@DisplayName("At vehicle exit, after reading registration number, system should update parking spot available.")
+	public void givenVehicleExit_processExitingVehicleTest_thenParkingSpotShouldBeUpdated() {
+		// GIVEN
+		when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+		when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+		// WHEN
+		parkingService.processExitingVehicle();
+		// THEN
+		verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
 	}
 
 }

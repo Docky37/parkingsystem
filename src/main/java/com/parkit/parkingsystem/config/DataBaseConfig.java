@@ -29,7 +29,6 @@ public class DataBaseConfig {
 		    
 		    // create a connection to the database
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			return DriverManager.getConnection(url, user, password);
 		}catch (IOException e){
 			logger.error("Unable to read database properties file!",e);
 		}
