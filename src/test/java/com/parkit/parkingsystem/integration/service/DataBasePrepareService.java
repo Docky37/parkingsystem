@@ -32,8 +32,8 @@ public class DataBasePrepareService {
 			connection = dataBaseTestConfig.getConnection();
 
 			// set ticket InTime
-			connection.prepareStatement("update test.ticket set IN_TIME = date_sub(IN_TIME, interval 1 HOUR) where ID=1;")
-					.executeUpdate();
+			connection.prepareStatement("update test.ticket set IN_TIME = date_sub(IN_TIME, interval 3601 SECOND) where ID=1;")
+			.executeUpdate();
 
 		} catch (Exception e) {
 			e.printStackTrace();
