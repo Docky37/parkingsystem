@@ -7,6 +7,7 @@ import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
 import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
+import com.parkit.parkingsystem.service.IParkingService;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.junit.jupiter.api.AfterAll;
@@ -59,7 +60,7 @@ public class ParkingDataBaseIT {
 	@DisplayName("At vehicle entry, after incoming process, DB tables should be updated (parking.AVAILABLE, new record in ticket).")
 	public void givenVehicleEntry_whenIncomingProcessIsCompleted_thenDBShouldBeUpdated() {
 		// GIVEN
-		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+		IParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processIncomingVehicle();
 		// WHEN
 		ParkingSpot parkingSpot = parkingService.getNextParkingNumberIfAvailable();
@@ -74,7 +75,7 @@ public class ParkingDataBaseIT {
 	@DisplayName("At vehicle exit, after exit process, DB tables should be updated (OUT_TIME & PRICE).")
 	public void givenVehicleExit_whenExitProcessIsCompleted_thenDBShouldBeUpdated() {
 		// GIVEN
-		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+		IParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processIncomingVehicle();
 		dataBasePrepareService.updateInTime(); // Data update used to generate one hour parking duration
 		// WHEN

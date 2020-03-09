@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 
-public class ParkingService {
+public class ParkingService implements IParkingService {
 
 	private static final Logger logger = LogManager.getLogger("ParkingService");
 
@@ -29,6 +29,7 @@ public class ParkingService {
 		this.ticketDAO = ticketDAO;
 	}
 
+	@Override
 	public void processIncomingVehicle() {
 		try {
 			ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
@@ -72,6 +73,7 @@ public class ParkingService {
 		}
 	}
 
+	@Override
 	public ParkingSpot getNextParkingNumberIfAvailable() {
 		int parkingNumber = 0;
 		ParkingSpot parkingSpot = null;
@@ -109,6 +111,7 @@ public class ParkingService {
 		}
 	}
 
+	@Override
 	public void processExitingVehicle() {
 		try {
 			String vehicleRegNumber = getVehicleRegNumber();
