@@ -5,7 +5,7 @@ import com.parkit.parkingsystem.dao.ITicketDAO;
 import com.parkit.parkingsystem.dao.IParkingSpotDAO;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
-import com.parkit.parkingsystem.util.I_ImputReaderUtil;
+import com.parkit.parkingsystem.util.IImputReaderUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,11 +20,11 @@ public class ParkingService implements IParkingService {
 
 	private static IFareCalculatorService fareCalculatorService = new FareCalculatorService();
 
-	private I_ImputReaderUtil inputReaderUtil;
+	private IImputReaderUtil inputReaderUtil;
 	private IParkingSpotDAO parkingSpotDAO;
 	private ITicketDAO ticketDAO;
 
-	public ParkingService(I_ImputReaderUtil inputReaderUtil, IParkingSpotDAO parkingSpotDAO, ITicketDAO ticketDAO) {
+	public ParkingService(IImputReaderUtil inputReaderUtil, IParkingSpotDAO parkingSpotDAO, ITicketDAO ticketDAO) {
 		this.inputReaderUtil = inputReaderUtil;
 		this.parkingSpotDAO = parkingSpotDAO;
 		this.ticketDAO = ticketDAO;

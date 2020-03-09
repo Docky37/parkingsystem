@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class InputReaderUtil implements I_ImputReaderUtil {
+public class InputReaderUtil implements IImputReaderUtil {
 	private static final Logger logger = LogManager.getLogger("InputReaderUtil");
 
 	@Override

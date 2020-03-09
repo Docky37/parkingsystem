@@ -2,7 +2,7 @@ package com.parkit.parkingsystem.util;
 
 import java.io.IOException;
 
-public interface I_ImputReaderUtil {
+public interface IImputReaderUtil {
 
 	int readSelection();
 
