@@ -5,6 +5,7 @@ import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.FareCalculatorService;
+import com.parkit.parkingsystem.service.IFareCalculatorService;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,7 @@ import java.time.LocalDateTime;
 
 public class FareCalculatorServiceTest {
 
-	private static FareCalculatorService fareCalculatorService;
+	private static IFareCalculatorService fareCalculatorService;
 	private Ticket ticket;
 
 	@BeforeAll

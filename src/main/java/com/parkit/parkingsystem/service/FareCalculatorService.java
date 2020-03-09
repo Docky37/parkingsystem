@@ -8,12 +8,13 @@ import java.time.temporal.ChronoUnit;
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.model.Ticket;
 
-public class FareCalculatorService {
+public class FareCalculatorService implements IFareCalculatorService {
 	BigDecimal price = new BigDecimal(0);
 	BigDecimal discount = new BigDecimal(0);
 	BigDecimal duration = new BigDecimal(0);
 	MathContext mathContext = new MathContext(3, RoundingMode.HALF_UP);
 
+	@Override
 	public void calculateFare(Ticket ticket) {
 		if ((ticket.getOutTime() == null) || (ticket.getOutTime().isBefore(ticket.getInTime()))) {
 			throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
@@ -43,6 +44,7 @@ public class FareCalculatorService {
 		}
 	}
 
+	@Override
 	public void calculateAndSetPrice(Double fare, Ticket ticket) {
 		BigDecimal calculedPrice = BigDecimal.ZERO;
 		BigDecimal roundedPrice;
