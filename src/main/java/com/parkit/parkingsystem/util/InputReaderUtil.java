@@ -3,36 +3,43 @@ package com.parkit.parkingsystem.util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class InputReaderUtil {
+	private static final Logger logger = LogManager.getLogger("InputReaderUtil");
 
-    private static Scanner scan = new Scanner(System.in);
-    private static final Logger logger = LogManager.getLogger("InputReaderUtil");
+	public int readSelection() {
+		int tempInt = -1;
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+		try {
+			String tempString;
+			tempString = bufferedReader.readLine();
+			if (tempString.length() == 1) {
+				tempInt = Integer.parseInt(tempString);
+			}
+		} catch (IOException e) {
+			logger.error("Error while reading user input from Shell", e);
+			logger.error("Error reading input. Please enter valid number for proceeding further");
+			tempInt = -1;
+		}
+		return (tempInt);
+	}
 
-    public int readSelection() {
-        try {
-            return(Integer.parseInt(scan.nextLine()));
-        }catch(Exception e){
-            logger.error("Error while reading user input from Shell", e);
-            logger.error("Error reading input. Please enter valid number for proceeding further");
-            return -1;
-        }
-    }
-
-    public String readVehicleRegistrationNumber() {
-        try {
-            String vehicleRegNumber= scan.nextLine();
-            if(vehicleRegNumber == null || vehicleRegNumber.trim().length()==0) {
-                throw new IllegalArgumentException("Invalid input provided");
-            }
-            return vehicleRegNumber;
-        }catch(Exception e){
-            logger.error("Error while reading user input from Shell", e);
-            logger.error("Error reading input. Please enter a valid string for vehicle registration number");
-            throw e;
-        }
-    }
-
+	public String readVehicleRegistrationNumber() throws IOException {
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+		try {
+			String vehicleRegNumber = bufferedReader.readLine();
+			if (vehicleRegNumber != null && vehicleRegNumber.trim().length() > 0
+					&& vehicleRegNumber.trim().length() < 9) {
+				return vehicleRegNumber;
+			}
+			return "ILLEGAL ARGUMENT";
+		} catch (IOException ioe) {
+			logger.error("Input error while reading", ioe);
+			throw ioe;
+		}
+	}
 
 }

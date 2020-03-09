@@ -9,6 +9,7 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 
@@ -61,9 +62,14 @@ public class ParkingService {
 		}
 	}
 
-	private String getVehicleRegNumber() {
+	private String getVehicleRegNumber() throws IOException {
 		logger.info("Please type the vehicle registration number and press enter key");
-		return inputReaderUtil.readVehicleRegistrationNumber();
+		try {
+			return inputReaderUtil.readVehicleRegistrationNumber();
+		} catch (Exception e) {
+			logger.info("EXCEPTION");
+			return "";
+		}
 	}
 
 	public ParkingSpot getNextParkingNumberIfAvailable() {
