@@ -9,7 +9,8 @@ import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.IParkingService;
 import com.parkit.parkingsystem.service.ParkingService;
-import com.parkit.parkingsystem.util.InputReaderUtil;
+import com.parkit.parkingsystem.util.I_ImputReaderUtil;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +33,7 @@ public class ParkingDataBaseIT {
 	private static DataBasePrepareService dataBasePrepareService;
 
 	@Mock
-	private static InputReaderUtil inputReaderUtil;
+	private static I_ImputReaderUtil inputReaderUtil;
 
 	@BeforeAll
 	private static void setUp() throws Exception {

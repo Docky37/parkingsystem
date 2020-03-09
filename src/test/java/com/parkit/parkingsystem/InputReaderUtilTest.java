@@ -13,10 +13,11 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import com.parkit.parkingsystem.util.I_ImputReaderUtil;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
 public class InputReaderUtilTest {
-	private static InputReaderUtil inputReaderUtil;
+	private static I_ImputReaderUtil inputReaderUtil;
 
 	@BeforeAll
 	private static void setUp() {

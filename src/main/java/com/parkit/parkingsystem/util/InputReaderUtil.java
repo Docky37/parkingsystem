@@ -7,9 +7,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class InputReaderUtil {
+public class InputReaderUtil implements I_ImputReaderUtil {
 	private static final Logger logger = LogManager.getLogger("InputReaderUtil");
 
+	@Override
 	public int readSelection() {
 		int tempInt = -1;
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
@@ -27,6 +28,7 @@ public class InputReaderUtil {
 		return (tempInt);
 	}
 
+	@Override
 	public String readVehicleRegistrationNumber() throws IOException {
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 		try {
