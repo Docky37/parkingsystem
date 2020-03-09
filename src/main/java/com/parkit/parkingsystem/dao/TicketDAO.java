@@ -13,12 +13,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 
-public class TicketDAO {
+public class TicketDAO implements ITicketDAO {
 
 	private static final Logger logger = LogManager.getLogger("TicketDAO");
 
 	private DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
+	@Override
 	public boolean checkExistingTicket(String vehicleRegNumber) {
 		boolean existTicket = false;
         Connection con = null;
@@ -42,6 +43,7 @@ public class TicketDAO {
 		return existTicket;
 	}
 
+	@Override
 	public boolean saveTicket(Ticket ticket) {
 		Connection con = null;
         PreparedStatement ps=null;
@@ -65,6 +67,7 @@ public class TicketDAO {
 		}
 	}
 
+	@Override
 	public Ticket getTicket(String vehicleRegNumber) {
 		Connection con = null;
         PreparedStatement ps=null;
@@ -99,6 +102,7 @@ public class TicketDAO {
 		return ticket;
 	}
 
+	@Override
 	public boolean updateTicket(Ticket ticket) {
 		Connection con = null;
         PreparedStatement ps=null;
@@ -119,10 +123,12 @@ public class TicketDAO {
 		}
 	}
 
+	@Override
 	public DataBaseConfig getDataBaseConfig() {
 		return dataBaseConfig;
 	}
 
+	@Override
 	public void setDataBaseConfig(DataBaseConfig dataBaseConfig) {
 		this.dataBaseConfig = dataBaseConfig;
 	}

@@ -11,12 +11,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class ParkingSpotDAO {
+public class ParkingSpotDAO implements IParkingSpotDAO {
     private static final Logger logger = LogManager.getLogger("ParkingSpotDAO");
 
     private DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
-    public int getNextAvailableSlot(ParkingType parkingType){
+    @Override
+	public int getNextAvailableSlot(ParkingType parkingType){
         int result=-1;
         Connection con = null;
         ResultSet rs=null;
@@ -41,7 +42,8 @@ public class ParkingSpotDAO {
         return result;
     }
 
-    public boolean updateParking(ParkingSpot parkingSpot){
+    @Override
+	public boolean updateParking(ParkingSpot parkingSpot){
         //update the availability fo that parking slot
         Connection con = null;
         PreparedStatement ps=null;
@@ -66,6 +68,7 @@ public class ParkingSpotDAO {
 		return dataBaseConfig;
 	}
 
+	@Override
 	public void setDataBaseConfig(DataBaseConfig dataBaseConfig) {
 		this.dataBaseConfig = dataBaseConfig;
 	}

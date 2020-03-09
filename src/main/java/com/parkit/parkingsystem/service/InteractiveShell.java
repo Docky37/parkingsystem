@@ -1,7 +1,9 @@
 package com.parkit.parkingsystem.service;
 
+import com.parkit.parkingsystem.dao.ITicketDAO;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
+import com.parkit.parkingsystem.dao.IParkingSpotDAO;
 import com.parkit.parkingsystem.util.I_ImputReaderUtil;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.apache.logging.log4j.LogManager;
@@ -20,8 +22,8 @@ public class InteractiveShell {
 
 		boolean continueApp = true;
 		I_ImputReaderUtil inputReaderUtil = new InputReaderUtil();
-		ParkingSpotDAO parkingSpotDAO = new ParkingSpotDAO();
-		TicketDAO ticketDAO = new TicketDAO();
+		IParkingSpotDAO parkingSpotDAO = new ParkingSpotDAO();
+		ITicketDAO ticketDAO = new TicketDAO();
 		IParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 
 		while (continueApp) {
