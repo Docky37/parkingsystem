@@ -18,12 +18,10 @@ public class InputReaderUtil implements IImputReaderUtil {
 			String tempString;
 			tempString = bufferedReader.readLine();
 			if (tempString.length() == 1) {
-				tempInt = Integer.parseInt(tempString);
+				tempInt = parseIntMyString(tempString);
 			}
 		} catch (IOException e) {
-			logger.error("Error while reading user input from Shell", e);
-			logger.error("Error reading input. Please enter valid number for proceeding further");
-			tempInt = -1;
+			logger.error("Error reading input.", e);
 		}
 		return (tempInt);
 	}
@@ -33,8 +31,7 @@ public class InputReaderUtil implements IImputReaderUtil {
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 		try {
 			String vehicleRegNumber = bufferedReader.readLine();
-			if (vehicleRegNumber != null && vehicleRegNumber.trim().length() > 0
-					&& vehicleRegNumber.trim().length() < 9) {
+			if (vehicleRegNumber.trim().length() > 0 && vehicleRegNumber.trim().length() < 9) {
 				return vehicleRegNumber;
 			}
 			return "ILLEGAL ARGUMENT";
@@ -42,6 +39,17 @@ public class InputReaderUtil implements IImputReaderUtil {
 			logger.error("Input error while reading", ioe);
 			throw ioe;
 		}
+	}
+
+	private int parseIntMyString(String tempString) {
+		int tempInt = -1;
+		try {
+			tempInt = Integer.parseInt(tempString);
+		} catch (NumberFormatException e) {
+			logger.info("Please enter valid number for proceeding further");
+			logger.error("Cannot parseInt(tempString) if tempString is not a Number!", e);
+		}
+		return tempInt;
 	}
 
 }
