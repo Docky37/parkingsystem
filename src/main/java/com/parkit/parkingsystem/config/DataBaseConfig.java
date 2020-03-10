@@ -5,66 +5,115 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
 
+/**
+ *
+ * @author Tek
+ *
+ */
 public class DataBaseConfig {
 
-	private static final Logger logger = LogManager.getLogger("DataBaseConfig");
-	private String url;
+    /**
+     * LOGGER initialized to send console message.
+     */
+    private static final Logger LOGGER = LogManager.getLogger("DataBaseConfig");
+    /**
+     * URL used to connect application to MySQL database.
+     */
+    private String url;
+    /**
+     * Path of the connexion properties file.
+     */
+    private static final String
+        PROPERTIES_PATH = "src/main/resources/db.properties";
+    /**
+     * Use to store the username of MySQL database.
+     */
     private String user;
+    /**
+     * Use to store the password of MySQL database.
+     */
     private String password;
 
-	public Connection getConnection() throws ClassNotFoundException, SQLException {
-		logger.info("Create DB connection");
-		try(FileInputStream f = new FileInputStream("src/main/resources/db.properties")) {
-		    // load the properties file
-		    Properties pros = new Properties();
-		    pros.load(f);
-		 
-		    // assign db parameters
-		    url       = pros.getProperty("url");
-		    user      = pros.getProperty("user");
-		    password  = pros.getProperty("password");
-		    
-		    // create a connection to the database
-			Class.forName("com.mysql.cj.jdbc.Driver");
-		}catch (IOException e){
-			logger.error("Unable to read database properties file!",e);
-		}
-		return DriverManager.getConnection(url, user, password);
-	}
+    /**
+     * Create a connection to MySQL database.
+     *
+     * @return a Connection instance
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public Connection getConnection()
+            throws ClassNotFoundException, SQLException {
+        LOGGER.info("Create DB connection");
+        try (FileInputStream f = new FileInputStream(PROPERTIES_PATH)) {
+            // load the properties file
+            Properties pros = new Properties();
+            pros.load(f);
 
-	public void closeConnection(Connection con) {
-		if (con != null) {
-			try {
-				con.close();
-				logger.info("Closing DB connection");
-			} catch (SQLException e) {
-				logger.error("Error while closing connection", e);
-			}
-		}
-	}
+            // assign db parameters
+            url = pros.getProperty("url");
+            user = pros.getProperty("user");
+            password = pros.getProperty("password");
 
-	public void closePreparedStatement(PreparedStatement ps) {
-		if (ps != null) {
-			try {
-				ps.close();
-				logger.info("Closing Prepared Statement");
-			} catch (SQLException e) {
-				logger.error("Error while closing prepared statement", e);
-			}
-		}
-	}
+            // create a connection to the database
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (IOException e) {
+            LOGGER.error("Unable to read database properties file!", e);
+        }
+        return DriverManager.getConnection(url, user, password);
+    }
 
-	public void closeResultSet(ResultSet rs) {
-		if (rs != null) {
-			try {
-				rs.close();
-				logger.info("Closing Result Set");
-			} catch (SQLException e) {
-				logger.error("Error while closing result set", e);
-			}
-		}
-	}
+    /**
+     * Close the given Connection.
+     *
+     * @param con the Connection to close
+     */
+    public void closeConnection(final Connection con) {
+        if (con != null) {
+            try {
+                con.close();
+                LOGGER.info("Closing DB connection");
+            } catch (SQLException e) {
+                LOGGER.error("Error while closing connection", e);
+            }
+        }
+    }
+
+    /**
+     * Close the given PreparedStatement.
+     *
+     * @param ps the PreparedStatement to close
+     */
+    public void closePreparedStatement(final PreparedStatement ps) {
+        if (ps != null) {
+            try {
+                ps.close();
+                LOGGER.info("Closing Prepared Statement");
+            } catch (SQLException e) {
+                LOGGER.error("Error while closing prepared statement", e);
+            }
+        }
+    }
+
+    /**
+     * Close the given ResultSet.
+     *
+     * @param rs the ResultSet to close
+     */
+    public void closeResultSet(final ResultSet rs) {
+        if (rs != null) {
+            try {
+                rs.close();
+                LOGGER.info("Closing Result Set");
+            } catch (SQLException e) {
+                LOGGER.error("Error while closing result set", e);
+            }
+        }
+    }
 }

@@ -195,7 +195,7 @@ public class FareCalculatorServiceTest {
 			ticket.setParkingSpot(parkingSpot);
 			ticket.setRecurrentUser(true);
 			BigDecimal price = new BigDecimal(0);
-			price = BigDecimal.ONE.subtract(BigDecimal.valueOf(Fare.REGULAR_CUSTOMER_DISCOUNT))
+			price = BigDecimal.ONE.subtract(BigDecimal.valueOf(Fare.RECURRENT_USER_DISCOUNT))
 					.multiply(BigDecimal.valueOf(Fare.CAR_RATE_PER_HOUR));
 			BigDecimal roundedPrice = new BigDecimal(0);
 			roundedPrice = price.setScale(2, RoundingMode.HALF_UP);

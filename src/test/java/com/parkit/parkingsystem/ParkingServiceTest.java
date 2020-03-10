@@ -7,7 +7,7 @@ import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.IParkingService;
 import com.parkit.parkingsystem.service.ParkingService;
-import com.parkit.parkingsystem.util.IImputReaderUtil;
+import com.parkit.parkingsystem.util.IInputReaderUtil;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +28,7 @@ public class ParkingServiceTest {
 	private static IParkingService parkingService;
 	Ticket ticket;
 	@Mock
-	private static IImputReaderUtil inputReaderUtil;
+	private static IInputReaderUtil inputReaderUtil;
 	@Mock
 	private static ParkingSpotDAO parkingSpotDAO;
 	@Mock

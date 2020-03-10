@@ -13,123 +13,189 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 
+/**
+ * This class defines methods used to deal with ticket table of prod DB.
+ *
+ * @author Tek
+ */
 public class TicketDAO implements ITicketDAO {
+    /**
+     * Initialise a Logger used to send messages to the console.
+     */
+    private static final Logger LOGGER = LogManager.getLogger("TicketDAO");
+    /**
+     * Create a DataBasObject used to make a connection with the Prod DataBase.
+     */
+    private DataBaseConfig dataBaseConfig = new DataBaseConfig();
+    /**
+     * A static final int to avoid Magic Number.
+     */
+    private static final int SEPT = 7;
 
-	private static final Logger logger = LogManager.getLogger("TicketDAO");
-
-	private DataBaseConfig dataBaseConfig = new DataBaseConfig();
-
-	@Override
-	public boolean checkExistingTicket(String vehicleRegNumber) {
-		boolean existTicket = false;
+    /**
+     * Used to check if there is a existing ticket for the given
+     * vehicleRegNumber.
+     *
+     * @param vehicleRegNumber the unique identifer of a vehicle
+     * @return true if a previous ticket exist
+     */
+    @Override
+    public boolean checkExistingTicket(final String vehicleRegNumber) {
+        boolean existTicket = false;
         Connection con = null;
-        PreparedStatement ps=null;
-        ResultSet rs=null;
-		try {
-			con = getDataBaseConfig().getConnection();
-			ps = con.prepareStatement(DBConstants.SEARCH_TICKET);
-			ps.setString(1, vehicleRegNumber);
-			rs = ps.executeQuery();
-			if (rs.next()) {
-				existTicket=true;
-			}
-		} catch (Exception ex) {
-			logger.error("Error checkExistingTicket(vehicleRegNumber)", ex);
-		} finally {
-			getDataBaseConfig().closeConnection(con);
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = getDataBaseConfig().getConnection();
+            ps = con.prepareStatement(DBConstants.SEARCH_TICKET);
+            ps.setString(1, vehicleRegNumber);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                existTicket = true;
+            }
+        } catch (Exception ex) {
+            LOGGER.error("Error checkExistingTicket(vehicleRegNumber)", ex);
+        } finally {
+            getDataBaseConfig().closeConnection(con);
             getDataBaseConfig().closePreparedStatement(ps);
             getDataBaseConfig().closeResultSet(rs);
-		}
-		return existTicket;
-	}
+        }
+        return existTicket;
+    }
 
-	@Override
-	public boolean saveTicket(Ticket ticket) {
-		Connection con = null;
-        PreparedStatement ps=null;
-		try {
-			con = getDataBaseConfig().getConnection();
-			ps = con.prepareStatement(DBConstants.SAVE_TICKET);
-			// ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME, IS_RECURRENT_USER)
-			ps.setInt(1, ticket.getParkingSpot().getId());
-			ps.setString(2, ticket.getVehicleRegNumber());
-			ps.setDouble(3, ticket.getPrice());
-			ps.setTimestamp(4, Timestamp.valueOf(ticket.getInTime()));
-			ps.setTimestamp(5, (ticket.getOutTime() == null) ? null : (Timestamp.valueOf(ticket.getOutTime())));
-			ps.setBoolean(6, ticket.isRecurrentUser());
-			return ps.execute();
-		} catch (Exception ex) {
-			logger.error("Error fetching next available slot", ex);
-			return false;
-		} finally {
-			getDataBaseConfig().closeConnection(con);
+    /**
+     * Used to save the given ticket in the ticket table of prod DB.
+     *
+     * @param ticket the Ticket to save
+     * @return true if job is well done
+     */
+    @Override
+    public boolean saveTicket(final Ticket ticket) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        int i = 1;
+        try {
+            con = getDataBaseConfig().getConnection();
+            ps = con.prepareStatement(DBConstants.SAVE_TICKET);
+            // ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME,
+            // IS_RECURRENT_USER)
+            ps.setInt(i, ticket.getParkingSpot().getId());
+            i++;
+            ps.setString(i, ticket.getVehicleRegNumber());
+            i++;
+            ps.setDouble(i, ticket.getPrice());
+            i++;
+            ps.setTimestamp(i, Timestamp.valueOf(ticket.getInTime()));
+            i++;
+            ps.setTimestamp(i, (ticket.getOutTime() == null) ? null
+                    : (Timestamp.valueOf(ticket.getOutTime())));
+            i++;
+            ps.setBoolean(i, ticket.isRecurrentUser());
+            return ps.execute();
+        } catch (Exception ex) {
+            LOGGER.error("Error fetching next available slot", ex);
+            return false;
+        } finally {
+            getDataBaseConfig().closeConnection(con);
             getDataBaseConfig().closePreparedStatement(ps);
-		}
-	}
+        }
+    }
 
-	@Override
-	public Ticket getTicket(String vehicleRegNumber) {
-		Connection con = null;
-        PreparedStatement ps=null;
-		Ticket ticket = null;
-        ResultSet rs=null;
-		try {
-			con = getDataBaseConfig().getConnection();
-			ps = con.prepareStatement(DBConstants.GET_TICKET);
-			// ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
-			ps.setString(1, vehicleRegNumber);
-			rs = ps.executeQuery();
-			if (rs.next()) {
-				ticket = new Ticket();
-				ParkingSpot parkingSpot = new ParkingSpot(rs.getInt(1), ParkingType.valueOf(rs.getString(7)), false);
-				ticket.setParkingSpot(parkingSpot);
-				ticket.setId(rs.getInt(2));
-				ticket.setVehicleRegNumber(vehicleRegNumber);
-				ticket.setPrice(rs.getDouble(3));
-				ticket.setInTime(rs.getTimestamp(4).toLocalDateTime());
-				ticket.setOutTime((rs.getTimestamp(5)== null)?null:rs.getTimestamp(5).toLocalDateTime());
-				ticket.setRecurrentUser(rs.getBoolean(6));
-			}
-			getDataBaseConfig().closeResultSet(rs);
-			getDataBaseConfig().closePreparedStatement(ps);
-		} catch (Exception ex) {
-			logger.error("Error fetching next available slot", ex);
-		} finally {
-			getDataBaseConfig().closeConnection(con);
+    /**
+     * Used to get the latest Ticket of the given vehicleRegNumber.
+     *
+     * @param vehicleRegNumber the unique identifer of a vehicle
+     * @return the latest Ticket for the given vehicleRegNumber
+     */
+    @Override
+    public Ticket getTicket(final String vehicleRegNumber) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        Ticket ticket = null;
+        ResultSet rs = null;
+        int i = 2;
+        try {
+            con = getDataBaseConfig().getConnection();
+            ps = con.prepareStatement(DBConstants.GET_TICKET);
+            // ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
+            ps.setString(1, vehicleRegNumber);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                ticket = new Ticket();
+                ParkingSpot parkingSpot = new ParkingSpot(rs.getInt(1),
+                        ParkingType.valueOf(rs.getString(SEPT)), false);
+                ticket.setParkingSpot(parkingSpot);
+                ticket.setId(rs.getInt(i));
+                ticket.setVehicleRegNumber(vehicleRegNumber);
+                i++;
+                ticket.setPrice(rs.getDouble(i));
+                i++;
+                ticket.setInTime(rs.getTimestamp(i).toLocalDateTime());
+                i++;
+                ticket.setOutTime((rs.getTimestamp(i) == null) ? null
+                        : rs.getTimestamp(i).toLocalDateTime());
+                i++;
+                ticket.setRecurrentUser(rs.getBoolean(i));
+            }
+            getDataBaseConfig().closeResultSet(rs);
+            getDataBaseConfig().closePreparedStatement(ps);
+        } catch (Exception ex) {
+            LOGGER.error("Error fetching next available slot", ex);
+        } finally {
+            getDataBaseConfig().closeConnection(con);
             getDataBaseConfig().closePreparedStatement(ps);
             getDataBaseConfig().closeResultSet(rs);
-		}
-		return ticket;
-	}
+        }
+        return ticket;
+    }
 
-	@Override
-	public boolean updateTicket(Ticket ticket) {
-		Connection con = null;
-        PreparedStatement ps=null;
-		try {
-			con = getDataBaseConfig().getConnection();
-			ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
-			ps.setDouble(1, ticket.getPrice());
-			ps.setTimestamp(2, Timestamp.valueOf(ticket.getOutTime()));
-			ps.setInt(3, ticket.getId());
-			ps.execute();
-			return true;
-		} catch (Exception ex) {
-			logger.error("Error saving ticket info", ex);
-			return false;
-		} finally {
-			getDataBaseConfig().closeConnection(con);
+    /**
+     * Used to update the latest Ticket of the given vehicleRegNumber.
+     *
+     * @param ticket the Ticket to update
+     * @return true if job is well done
+     */
+    @Override
+    public boolean updateTicket(final Ticket ticket) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        int i = 1;
+        try {
+            con = getDataBaseConfig().getConnection();
+            ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
+            ps.setDouble(i, ticket.getPrice());
+            i++;
+            ps.setTimestamp(i, Timestamp.valueOf(ticket.getOutTime()));
+            i++;
+            ps.setInt(i, ticket.getId());
+            ps.execute();
+            return true;
+        } catch (Exception ex) {
+            LOGGER.error("Error saving ticket info", ex);
+            return false;
+        } finally {
+            getDataBaseConfig().closeConnection(con);
             getDataBaseConfig().closePreparedStatement(ps);
-		}
-	}
+        }
+    }
 
-	@Override
-	public DataBaseConfig getDataBaseConfig() {
-		return dataBaseConfig;
-	}
+    /**
+     * Setter of a DataBaseConfig object.
+     *
+     * @param dBConfig the DataBaseConfig to set
+     */
+    @Override
+    public void setDataBaseConfig(final DataBaseConfig dBConfig) {
+        this.dataBaseConfig = dBConfig;
+    }
 
-	@Override
-	public void setDataBaseConfig(DataBaseConfig dataBaseConfig) {
-		this.dataBaseConfig = dataBaseConfig;
-	}
+    /**
+     * Getter of the object DataBaseConfig.
+     *
+     * @return the DataBaseConfig object
+     */
+    public DataBaseConfig getDataBaseConfig() {
+        return dataBaseConfig;
+    }
+
 }
