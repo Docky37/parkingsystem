@@ -30,8 +30,8 @@ public class DataBaseConfig {
     /**
      * Path of the connexion properties file.
      */
-    private static final String
-        PROPERTIES_PATH = "src/main/resources/db.properties";
+    private static final String PROPERTIES_PATH = "src/main/resources/"
+            + "db.properties";
     /**
      * Use to store the username of MySQL database.
      */
@@ -40,6 +40,10 @@ public class DataBaseConfig {
      * Use to store the password of MySQL database.
      */
     private String password;
+    /**
+     * Boolean used to switch BufferredReader for E2E test.
+     */
+    private static boolean isE2ETest = false;
 
     /**
      * Create a connection to MySQL database.
@@ -52,16 +56,17 @@ public class DataBaseConfig {
             throws ClassNotFoundException, SQLException {
         LOGGER.info("Create DB connection");
         try (FileInputStream f = new FileInputStream(PROPERTIES_PATH)) {
-            // load the properties file
             Properties pros = new Properties();
             pros.load(f);
-
-            // assign db parameters
-            url = pros.getProperty("url");
+            // assign url with test or prod DataBase
+            if (isE2ETest) {
+                url = pros.getProperty("url2");
+            } else {
+                url = pros.getProperty("url");
+            }
             user = pros.getProperty("user");
             password = pros.getProperty("password");
 
-            // create a connection to the database
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (IOException e) {
             LOGGER.error("Unable to read database properties file!", e);
@@ -116,4 +121,14 @@ public class DataBaseConfig {
             }
         }
     }
+
+    /**
+     * Setter du boolean isE2ETest.
+     *
+     * @param e2ETest the isE2ETest to set
+     */
+    public static void setE2ETest(final boolean e2ETest) {
+        isE2ETest = e2ETest;
+    }
+
 }

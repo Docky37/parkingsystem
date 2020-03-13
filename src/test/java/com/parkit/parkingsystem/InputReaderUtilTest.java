@@ -22,6 +22,7 @@ public class InputReaderUtilTest {
 	@BeforeAll
 	private static void setUp() {
 		inputReaderUtil = new InputReaderUtil();
+        InputReaderUtil.setE2ETest(false);
 	}
 
 	@Nested

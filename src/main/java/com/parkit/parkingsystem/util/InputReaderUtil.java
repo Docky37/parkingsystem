@@ -23,6 +23,16 @@ public class InputReaderUtil implements IInputReaderUtil {
      * Maximum number of characters allocated for a registring number.
      */
     private static final int MAX_CHAR_FOR_REGNUMBER = 8;
+    /**
+     * Boolean used to switch BufferredReader for E2E test.
+     */
+    private static boolean isE2ETest = true;
+
+    /**
+     * Class BufferedReader only used for E2E test.
+     */
+    private static BufferedReader buffReader = new BufferedReader(
+            new InputStreamReader(System.in));
 
     /**
      * Method used to read int keyboard inputs.
@@ -32,12 +42,16 @@ public class InputReaderUtil implements IInputReaderUtil {
     @Override
     public int readSelection() {
         int tempInt = -1;
-        BufferedReader bufferedReader = new BufferedReader(
-                new InputStreamReader(System.in));
         try {
             String tempString;
-            tempString = bufferedReader.readLine();
-            if (tempString.length() == 1) {
+            if (isE2ETest) {
+                tempString = buffReader.readLine();
+            } else {
+                BufferedReader bufferedReader = new BufferedReader(
+                        new InputStreamReader(System.in));
+                tempString = bufferedReader.readLine();
+            }
+            if (tempString != null && tempString.length() == 1) {
                 tempInt = parseIntMyString(tempString);
             }
         } catch (IOException e) {
@@ -55,12 +69,18 @@ public class InputReaderUtil implements IInputReaderUtil {
      */
     @Override
     public String readVehicleRegistrationNumber() throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(
-                new InputStreamReader(System.in));
         try {
-            String vehicleRegNumber = bufferedReader.readLine();
-            if (vehicleRegNumber.trim().length() > 0 && vehicleRegNumber.trim()
-                    .length() < MAX_CHAR_FOR_REGNUMBER + 1) {
+            String vehicleRegNumber;
+            if (isE2ETest) {
+                vehicleRegNumber = buffReader.readLine();
+            } else {
+                BufferedReader bufferedReader = new BufferedReader(
+                        new InputStreamReader(System.in));
+                vehicleRegNumber = bufferedReader.readLine();
+            }
+            if (vehicleRegNumber != null && vehicleRegNumber.trim().length() > 0
+                    && vehicleRegNumber.trim().length() < MAX_CHAR_FOR_REGNUMBER
+                            + 1) {
                 return vehicleRegNumber;
             }
             return "ILLEGAL ARGUMENT";
@@ -83,10 +103,27 @@ public class InputReaderUtil implements IInputReaderUtil {
         } catch (NumberFormatException e) {
             LOGGER.info("Please enter valid number for proceeding further");
             LOGGER.error("Cannot parseInt(tempString)"
-                    + " if tempString is not a Number!",
-                    e);
+                    + " if tempString is not a Number!", e);
         }
         return tempInt;
+    }
+
+    /**
+     * Setter du boolean isE2ETest.
+     *
+     * @return the isE2ETest
+     */
+    public static boolean isE2ETest() {
+        return isE2ETest;
+    }
+
+    /**
+     * Setter du boolean isE2ETest.
+     *
+     * @param e2ETest the isE2ETest to set
+     */
+    public static void setE2ETest(final boolean e2ETest) {
+        isE2ETest = e2ETest;
     }
 
 }
