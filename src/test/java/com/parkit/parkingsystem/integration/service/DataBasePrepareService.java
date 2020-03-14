@@ -66,7 +66,7 @@ public class DataBasePrepareService {
     }
 
     /**
-     * Update an existing ticket inTime one hour earlier
+     * Update an existing ticket inTime with arguments provided by E2E test.
      */
     public void updateInTimeWithArguments(int id, int delay, String unit) {
         Connection connection = null;
@@ -86,26 +86,6 @@ public class DataBasePrepareService {
         }
     }
 
-    /**
-     * Update an existing ticket inTime one hour earlier
-     */
-    public void updateInTimeWithArguments(int id, int delay, String unit) {
-        Connection connection = null;
-        try {
-            connection = dataBaseTestConfig.getConnection();
-
-            // set ticket InTime
-            connection.prepareStatement(
-                    "update test.ticket set IN_TIME = date_sub(IN_TIME, interval "
-                            + delay + " " + unit + ") where ID=" + id + ";")
-                    .executeUpdate();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            dataBaseTestConfig.closeConnection(connection);
-        }
-    }
 
     public ResultSet getResultSet() {
         Connection connection = null;
