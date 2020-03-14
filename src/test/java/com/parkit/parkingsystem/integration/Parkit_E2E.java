@@ -51,6 +51,13 @@ public class Parkit_E2E {
      * content too System.in, in order to replace user keyboard entries.
      */
     public InputStream stream;
+    /**
+     * As its explicit name indicates, this is the number test ticket records to
+     * update, for witch queries have to be prepared by the private void
+     * updateInDateOutDate() method. This number must be in accordance with the
+     * content of src/test/resources/testE2EUpdateInDateOutDate.txt
+     */
+    private static final int NUMBER_OF_TEST_TICKET_RECORDS_TO_UPDATE = 6;
 
     /**
      * Exectuted before the test serie, this method calls an external method to
@@ -142,9 +149,9 @@ public class Parkit_E2E {
 
     /**
      * Second part of E2E test. Firstable, the method calls a sub methode to
-     * uptade IN_TIME & OUT_TIME of test ticket table records. Then the test
-     * makes parking exit for all parked vehicule. Assertions allows us to check
-     * fare calculation.
+     * uptade IN_TIME of test ticket table records. Then the test (driven by
+     * testE2Ebis.txt) makes parking exit for all parked vehicule. Assertions
+     * allows us to check fare calculation.
      *
      * @throws SQLException
      * @throws IOException
@@ -216,11 +223,12 @@ public class Parkit_E2E {
             FileInputStream in = new FileInputStream(filepath);
             System.setIn(in);
         } catch (FileNotFoundException e) {
-            LOGGER.error("And now, where is testE2EUpdateInDateOutDate.txt file?");
+            LOGGER.error(
+                    "And now, where is testE2EUpdateInDateOutDate.txt file?");
         }
         BufferedReader bufferedReader = new BufferedReader(
                 new InputStreamReader(System.in));
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < NUMBER_OF_TEST_TICKET_RECORDS_TO_UPDATE; i++) {
             int id = parseIntMyString(bufferedReader.readLine());
             int delay = parseIntMyString(bufferedReader.readLine());
             String unit = bufferedReader.readLine();
