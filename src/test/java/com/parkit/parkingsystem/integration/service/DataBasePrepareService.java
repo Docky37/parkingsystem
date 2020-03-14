@@ -20,7 +20,7 @@ public class DataBasePrepareService {
     /**
      * Time delay used for inTime value update, to simulate an earlier entry.
      */
-    private static final int TIME_DELAY_IN_SECONDS = 3601;
+    private static final int TIME_DELAY_IN_HOURS = 1;
 
     /**
      * Reset the tests DataBase before tests.
@@ -45,9 +45,9 @@ public class DataBasePrepareService {
     }
 
     /**
-     * Update an existing ticket inTime value to create a
+     * Update an existing ticket inTime one hour earlier
      */
-    public void updateInTime() {
+    public void updateInTimeOneHourEarlier() {
         Connection connection = null;
         try {
             connection = dataBaseTestConfig.getConnection();
@@ -55,7 +55,28 @@ public class DataBasePrepareService {
             // set ticket InTime
             connection.prepareStatement(
                     "update test.ticket set IN_TIME = date_sub(IN_TIME, interval "
-                            + TIME_DELAY_IN_SECONDS + " SECOND) where ID=1;")
+                            + TIME_DELAY_IN_HOURS + " HOUR) where ID=1;")
+                    .executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            dataBaseTestConfig.closeConnection(connection);
+        }
+    }
+
+    /**
+     * Update an existing ticket inTime one hour earlier
+     */
+    public void updateInTimeWithArguments(int id, int delay, String unit) {
+        Connection connection = null;
+        try {
+            connection = dataBaseTestConfig.getConnection();
+
+            // set ticket InTime
+            connection.prepareStatement(
+                    "update test.ticket set IN_TIME = date_sub(IN_TIME, interval "
+                            + delay + " " + unit + ") where ID=" + id + ";")
                     .executeUpdate();
 
         } catch (Exception e) {
@@ -70,12 +91,12 @@ public class DataBasePrepareService {
         ResultSet rs = null;
         try {
             connection = dataBaseTestConfig.getConnection();
-            rs = connection.prepareStatement(
-                    "select * from test.ticket;").executeQuery();
+            rs = connection.prepareStatement("select * from test.ticket;")
+                    .executeQuery();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            //dataBaseTestConfig.closeConnection(connection);
+            // dataBaseTestConfig.closeConnection(connection);
         }
         return rs;
     }
