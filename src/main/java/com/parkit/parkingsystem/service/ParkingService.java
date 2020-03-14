@@ -178,7 +178,7 @@ public class ParkingService implements IParkingService {
             String vehicleRegNumber = getVehicleRegNumber();
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
             LocalDateTime outTime = LocalDateTime.now();
-            LocalDateTime inTime = ticket.getInTime();
+            LocalDateTime inTime = ticket.getInTime().plusSeconds(1);
             ticket.setOutTime(outTime);
             fareCalculatorService.calculateFare(ticket);
             if (ticketDAO.updateTicket(ticket)) {

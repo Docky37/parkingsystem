@@ -45,9 +45,9 @@ public class DataBasePrepareService {
     }
 
     /**
-     * Update an existing ticket inTime value to create a
+     * Update an existing ticket inTime one hour earlier
      */
-    public void updateInTime() {
+    public void updateInTimeOneHourEarlier() {
         Connection connection = null;
         try {
             connection = dataBaseTestConfig.getConnection();
@@ -65,17 +65,38 @@ public class DataBasePrepareService {
         }
     }
 
+    /**
+     * Update an existing ticket inTime one hour earlier
+     */
+    public void updateInTimeWithArguments(int id, int delay, String unit) {
+        Connection connection = null;
+        try {
+            connection = dataBaseTestConfig.getConnection();
+
+            // set ticket InTime
+            connection.prepareStatement(
+                    "update test.ticket set IN_TIME = date_sub(IN_TIME, interval "
+                            + delay + " " + unit + ") where ID=" + id + ";")
+                    .executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            dataBaseTestConfig.closeConnection(connection);
+        }
+    }
+
     public ResultSet getResultSet() {
         Connection connection = null;
         ResultSet rs = null;
         try {
             connection = dataBaseTestConfig.getConnection();
-            rs = connection.prepareStatement(
-                    "select * from test.ticket;").executeQuery();
+            rs = connection.prepareStatement("select * from test.ticket;")
+                    .executeQuery();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            //dataBaseTestConfig.closeConnection(connection);
+            // dataBaseTestConfig.closeConnection(connection);
         }
         return rs;
     }

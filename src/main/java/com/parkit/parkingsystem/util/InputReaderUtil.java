@@ -126,4 +126,18 @@ public class InputReaderUtil implements IInputReaderUtil {
         isE2ETest = e2ETest;
     }
 
+    /**
+     * @return the buffReader
+     */
+    public static BufferedReader getBuffReader() {
+        return buffReader;
+    }
+
+    /**
+     * @param bufferReader the buffReader to set
+     */
+    public static void setBuffReader(final BufferedReader bufferReader) {
+        InputReaderUtil.buffReader = bufferReader;
+    }
+
 }

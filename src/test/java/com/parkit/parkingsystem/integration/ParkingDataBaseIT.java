@@ -80,7 +80,7 @@ public class ParkingDataBaseIT {
 		// GIVEN
 		IParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processIncomingVehicle();
-		dataBasePrepareService.updateInTime(); // Data update used to generate one hour parking duration
+		dataBasePrepareService.updateInTimeOneHourEarlier(); // Data update used to generate one hour parking duration
 		// WHEN
 		parkingService.processExitingVehicle();
 		Ticket ticket = ticketDAO.getTicket("ABCDEF");
