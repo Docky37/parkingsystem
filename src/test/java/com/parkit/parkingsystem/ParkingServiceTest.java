@@ -68,6 +68,10 @@ public class ParkingServiceTest {
 		parkingService.processIncomingVehicle();
 		// THEN
 		verify(ticketDAO, Mockito.times(1)).checkExistingTicket(anyString());
+		verify(parkingSpotDAO, Mockito.times(1)).getNextAvailableSlot(any(ParkingType.class));
+		verify(ticketDAO, Mockito.times(1)).checkExistingTicket(anyString());
+		verify(inputReaderUtil, Mockito.times(1)).readSelection();
+		
 	}
 
 	@Test
@@ -81,6 +85,8 @@ public class ParkingServiceTest {
 		parkingService.processExitingVehicle();
 		// THEN
 		verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+		verify(ticketDAO, Mockito.times(1)).getTicket(anyString());
+		verify(ticketDAO, Mockito.times(1)).updateTicket(any(Ticket.class));
 	}
 
 }
