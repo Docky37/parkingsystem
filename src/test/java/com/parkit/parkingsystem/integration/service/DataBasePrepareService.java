@@ -45,6 +45,26 @@ public class DataBasePrepareService {
     }
 
     /**
+     * Reset the tests DataBase before tests.
+     */
+    public void updateParkingSoptAvailable() {
+        Connection connection = null;
+        try {
+            connection = dataBaseTestConfig.getConnection();
+
+            // set parking entries to available
+            connection.prepareStatement("update parking set available = false")
+                    .execute();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            dataBaseTestConfig.closeConnection(connection);
+        }
+    }
+
+    
+    /**
      * Update an existing ticket inTime one hour earlier
      */
     public void updateInTimeOneHourEarlier() {
