@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 /**
  * This class is used to read int keyboard inputs, and String registering number
@@ -32,7 +33,7 @@ public class InputReaderUtil implements IInputReaderUtil {
      * Class BufferedReader only used for E2E test.
      */
     private static BufferedReader buffReader = new BufferedReader(
-            new InputStreamReader(System.in));
+            new InputStreamReader(System.in, Charset.forName("UTF-8"))) ;
 
     /**
      * Method used to read int keyboard inputs.
@@ -48,7 +49,7 @@ public class InputReaderUtil implements IInputReaderUtil {
                 tempString = buffReader.readLine();
             } else {
                 BufferedReader bufferedReader = new BufferedReader(
-                        new InputStreamReader(System.in));
+                        new InputStreamReader(System.in, Charset.forName("UTF-8")));
                 tempString = bufferedReader.readLine();
             }
             if (tempString != null && tempString.length() == 1) {
@@ -75,7 +76,7 @@ public class InputReaderUtil implements IInputReaderUtil {
                 vehicleRegNumber = buffReader.readLine();
             } else {
                 BufferedReader bufferedReader = new BufferedReader(
-                        new InputStreamReader(System.in));
+                        new InputStreamReader(System.in, Charset.forName("UTF-8")));
                 vehicleRegNumber = bufferedReader.readLine();
             }
             if (vehicleRegNumber != null && vehicleRegNumber.trim().length() > 0
